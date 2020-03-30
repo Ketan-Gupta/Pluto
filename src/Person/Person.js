@@ -1,6 +1,49 @@
 // This person component is used to render information about Person.
-import React from "react";
+import React, { Component } from "react";
 
-const person = () => {
-  return <p>Person of Interest</p>;
+class Person extends Component
+{
+  getAge = () => {
+    return Math.floor(Math.random() * 45);
+  }
+    render()
+    {
+      return (
+        <div>
+          <p>Sergeant at Arms</p>
+          <p>Name : {this.props.name}</p>
+          <p> Age : {this.getAge()}</p>
+          <p>{this.props.children}</p>
+        </div>
+      )
+    }
+  }
+
+/*
+const person = (props) => {
+  return(
+    <div> 
+      <p>Sergeant at Arms</p>
+      <p>Name : { props.name }</p>
+      <p> Age : {getAge()}</p>
+      <p>{props.children}</p>
+    </div>
+  )
 };
+
+const getAge = () => {
+  return Math.floor(Math.random() * 45)
+}
+
+*/
+export default Person;
+
+
+// Remember that the jsx sytax is tranformed to React create equivalents, hence react library needs to imported mandatorily.
+// When using class based components, the props are accessed using this.<variable_name>
+// App element is rendered in place of root element.
+
+
+// Content can not only be passed with props, but 
+// structured html content can also be passed along by using enclosing
+// it inside the custom component and using it with props.children 
