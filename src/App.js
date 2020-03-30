@@ -18,8 +18,7 @@ class App extends Component {
       <div className="App">
         <h1>Plutov1 - Next Generation Gatekeeper</h1>
         <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
-        <p>The ultimate barriers shall be broken.</p>
-        <p>Are you ready to drop the charade?</p>
+        <p>Flood gates opened, Barriers broken.</p>
       </div>
     );
   }
