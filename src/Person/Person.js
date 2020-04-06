@@ -1,6 +1,7 @@
 // This person component is used to render information about Person.
-import React, { Component } from "react";
+import React, { useState } from "react";
 
+/*
 class Person extends Component
 {
   getAge = () => {
@@ -19,7 +20,8 @@ class Person extends Component
     }
   }
 
-/*
+*/
+
 const person = (props) => {
   return(
     <div> 
@@ -35,8 +37,7 @@ const getAge = () => {
   return Math.floor(Math.random() * 45)
 }
 
-*/
-export default Person;
+export default person;
 
 
 // Remember that the jsx sytax is tranformed to React create equivalents, hence react library needs to imported mandatorily.
