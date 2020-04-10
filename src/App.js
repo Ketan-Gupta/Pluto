@@ -1,78 +1,144 @@
-import React, { useState } from "react";
-import logo from "./logo.svg";
+import React, { useState, Component } from "react";
 import "./App.css";
 import Person from './Person/Person'
 
-  /*
-  class App extends Component {
-    state = {
-      persons: [
-        { name: 'Ketan', guilty: true },
-        { name: 'Karan', guilty: false}
-      ],
-      count: 0
-    }
-      // Handler are not active functions, they are triggered by events.
-      // some black magic fuckery, if a function is not referenced by a variable like done below and this is called inside it
-      // it simple won't work because then this won't refer to the class at runtime.
-      // Then the question arises, how the fuck is it working with render when it is not referenced by a variable?
-    switchNameHandler = () =>
-    {
-      //console.log("Name Handler Working");
-      // this.state.person[0].name = "Trial";
-      // DO NOT DO THIS. Use setState()
-      this.setState({
-        persons: [
-          { name: 'Gupta', guilty: true },
-          { name: 'Oberoi', guilty: false },
-        ]
-      });
-      // this will only change the person. It won't affect the part of the state that is not included in the changed object.
-    }  
-    render() {
-      //return <h1 className="App-title">Welcome to React</h1>;
-      //return React.createElement("div", null, "h1", "Hi! I am React Application");
-      // The upper will render h1 as text and not as a react component.
-      /* return React.createElement(
-        "div",
-        { className: "App-title" },
-        React.createElement("h1", null, "Hi! I am React Application")
-      );
-      */
-  /*
-      return (
-        <div className="App">
-          <h1>Plutov1 - Next Generation Gatekeeper</h1>
-          <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
-          <p>The ultimate barriers shall be broken.</p>
-          <button onClick={this.switchNameHandler}>Switch Name</button>
-          <Person name={this.state.persons[0].name}/>
-          <Person name={this.state.persons[1].name}>
-            Hobbies include: Temperature Sensors.
-          </Person>
-        </div>
-      );
-    }
+class App extends Component {
+  state = {
+    persons: [
+      { name: 'Ketan', guilty: true },
+      { name: 'Karan', guilty: false }
+    ],
+    count: 0,
+    showPersons: false
   }
-  
-  */
+  // Handler are not active functions, they are triggered by events.
+  // some black magic fuckery, if a function is not referenced by a variable like done below and this is called inside it
+  // it simple won't work because then this won't refer to the class at runtime.
+  // Then the question arises, how the fuck is it working with render when it is not referenced by a variable?
+  switchNameHandler = (names) => {
+    //console.log("Name Handler Working");
+    // this.state.person[0].name = "Trial";
+    // DO NOT DO THIS. Use setState()
+    this.setState({
+      persons: [
+        { name: names[0], guilty: true },
+        { name: names[1], guilty: false },
+      ]
+    });
 
-const app = () => {
+    // this will only change the person. It won't affect the part of the state that is not included in the changed object.
+  }
+
+  togglePersonsHandler = () => {
+    const currentShowPersonsStatus = this.state.showPersons;
+    this.setState({
+      showPersons: !currentShowPersonsStatus
+    })
+  }
+
+  changeNameHandler = (event) => {
+
+    this.setState({
+      persons: [
+        { name: "Gupta", guilty: true },
+        { name: event.target.value, guilty: false },
+      ]
+    });
+
+  }
+  render() {
+    //return <h1 className="App-title">Welcome to React</h1>;
+    //return React.createElement("div", null, "h1", "Hi! I am React Application");
+    // The upper will render h1 as text and not as a react component.
+    /* return React.createElement(
+      "div",
+      { className: "App-title" },
+      React.createElement("h1", null, "Hi! I am React Application")
+    );
+    */
+
+    const style = {
+      backgroundColor: 'white',
+      font: 'inherit',
+      border: '1px solid blue',
+      padding: '8px',
+      cursor: 'pointer'
+    };
+
+    return (
+      <div className="App">
+        <h1>Plutov1 - Next Generation Gatekeeper</h1>
+        <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
+        <p>The ultimate barriers shall be broken.</p>
+        <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        {
+          this.state.showPersons ?
+            <div>
+              <Person
+                name={this.state.persons[0].name}
+                guilty={this.state.persons[0].name} />
+              <Person
+                name={this.state.persons[1].name}
+                guilty={this.state.persons[1].name}
+                click={this.switchNameHandler}
+                change={this.changeNameHandler}
+              >Sergeant at Arms.
+        </Person>
+            </div> : null
+        }
+      </div>
+    );
+  }
+}
+
+/*
+const app = (props) => {
+
+  const [personState, setPersonState] = useState({
+    persons: [
+      { name: 'Ketan', guilty: true },
+      { name: 'Karan', guilty: false }
+    ],
+    count: 0
+  });
+
+  const [otherState, setOtherState] = useState("Temporary String value");
+
+  const switchNameHandler = () => {
+    //console.log("Name Handler Working");
+    // this.state.person[0].name = "Trial";
+    // DO NOT DO THIS. Use setState()
+    setPersonState({
+      persons: [
+        { name: 'Gupta', guilty: true },
+        { name: 'Oberoi', guilty: false },
+      ],
+      count: personState.count
+    });
+    // this will only change the person. It won't affect the part of the state that is not included in the changed object.
+    setOtherState("Changed Temporary Value");
+    console.log(otherState);
+  }
+
+  console.log(personState, otherState);
+
+
   return (
     <div className="App">
       <h1>Plutov1 - Next Generation Gatekeeper</h1>
       <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
       <p>The ultimate barriers shall be broken.</p>
-      <button onClick={this.switchNameHandler}>Switch Name</button>
-      <Person name="Ketan" />
-      <Person name="Karan">
+      <button onClick={switchNameHandler}>Switch Name</button>
+      <Person name={personState.persons[0].name} guilty={personState.persons[0].name} />
+      <Person name={personState.persons[1].name} guilty={personState.persons[1].name}>
         Hobbies include: Temperature Sensors.
       </Person>
     </div>
   );
 }
+*/
 
-export default app;
+export default App;
 
 // Importing this file will import this particular class, since the export is default.
 // The html compiles to the code which is returned internally.
@@ -87,7 +153,7 @@ export default app;
 
 // Sub tags inside Person tag can't be used directly, they need to go through children property.
 
-// Props are used to send information from outside, state is used to manage information from inside. However, state only works with components generated 
+// Props are used to send information from outside, state is used to manage information from inside. However, state only works with components generated
 // by extending a class as component.
 // However hooks can be used to manage inside information for functional components.
 
@@ -105,3 +171,46 @@ export default app;
 // Hence React will update the DOM in all the places that it needs to be updated to reflect the new state.
 
 // Since states can only be used in class based components, we have hooks that can be used with functional components.
+
+// useState returns exactly two elements.
+// First element being the current/actual state, and the other element being the function that presents the opportunity to set/change that state.
+
+// The current/actual state when extracted from the array can be used just like the original state object.
+// the custom "named" function setPersonState is mimicking the function setState provided by React.
+// However, this custom named function does not "merge" the new state into old one i.e the previous state values that are not
+// provided into the setPersonState will not be preserved w.r.t to the old state values.
+// which means that it replaces the old state with the new state instead of merging it.
+// multiple useStates can be used. userStates doesn't necessarily take objects, it also takes string, boolean, number etc.
+
+// Interesting : the "state" doesn't change even though setOtherChange was called(with console.log just after printing the old value).
+// This could only imply that react doesn't change
+// the state until and unless it detects the changes in the state and re-renders the page, hence ultimately updating the DOM.
+
+// Good practise is to use as many stateless/dumb components as possible, wherein the information is being collected from outside.
+// rather than formulating it inside. Defining states multiple places can lead to confusion and un-necessary issues.
+
+// stateful components = class based with setState, functional with useState [smart/container] use as few as possible
+// stateless components = any component without any state defined, either setState or useState. [presentational]
+
+// Methods references can be passed as props, the functional foundation of this attribute is so as to allow for a component to triggert
+// a change event i.e change the state of a component which it might not have direct access to, usually changing data in the parent component.
+// a similary analogy could be getter/setters in java working in similar behavious.
+
+// arguments can be passed into the function reference defined on button click, we have a bind property with this as the first argument,
+// which will bind "this" as first passed argument, to the "this" defined inside the switchNameHandler. 
+// Remember only because of ES6/arrow function defition, "this" can be used otherwise it would have thrown error.
+
+// instead of bind, we can also use an anonymous function () => this.switchNameHandler(names) in the props and pass the reference there.
+// not recommeded, may introduce performance issues. 
+
+// Check how in changeNameHandler , we did not have to explicitly bind any data to it i.e pass any arguments.
+// the event is automatically passed by javascript containing the html attribute and its associated value.
+
+
+// Learned so far: Trigger changes through event. Passing down method references(aka event references)
+
+// Scope allows for inline styling to take place, that is attaching css to a particular element only. Not recommended.
+
+// this.switchNameHandler.bind(this, ["Gupta", "Oberoi"] binding data i.e passing data into the method switchNameHandler
+
+// JSX statements inside {} cannot contain block statements, only expressions.

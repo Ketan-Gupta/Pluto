@@ -1,5 +1,6 @@
 // This person component is used to render information about Person.
 import React, { useState } from "react";
+import "./Person.css";
 
 /*
 class Person extends Component
@@ -23,12 +24,11 @@ class Person extends Component
 */
 
 const person = (props) => {
-  return(
-    <div> 
-      <p>Sergeant at Arms</p>
-      <p>Name : { props.name }</p>
-      <p> Age : {getAge()}</p>
+  return (
+    <div className="Person">
+      <p onClick={props.click}>Name : {props.name}, Age: {getAge()}</p>
       <p>{props.children}</p>
+      <input type="text" onChange={props.change} defaultValue={props.name} />
     </div>
   )
 };
