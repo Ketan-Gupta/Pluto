@@ -1,32 +1,57 @@
 import React, { useState, Component } from "react";
 import "./App.css";
+import Radium from 'radium';
 import Person from './Person/Person'
+ 
+
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   state = {
     persons: [
-      { name: 'Ketan', guilty: true },
-      { name: 'Karan', guilty: false }
+      { id: 1, name: 'Ketan', guilty: true },
+      { id:2, name: 'Karan', guilty: false }
     ],
-    count: 0,
+    mutable: true,
     showPersons: false
   }
-  // Handler are not active functions, they are triggered by events.
-  // some black magic fuckery, if a function is not referenced by a variable like done below and this is called inside it
-  // it simple won't work because then this won't refer to the class at runtime.
-  // Then the question arises, how the fuck is it working with render when it is not referenced by a variable?
-  switchNameHandler = (names) => {
-    //console.log("Name Handler Working");
-    // this.state.person[0].name = "Trial";
-    // DO NOT DO THIS. Use setState()
-    this.setState({
-      persons: [
-        { name: names[0], guilty: true },
-        { name: names[1], guilty: false },
-      ]
-    });
+    // Handler are not active functions, they are triggered by events.
+    // some black magic fuckery, if a function is not referenced by a variable like done below and this is called inside it
+    // it simple won't work because then this won't refer to the class at runtime.
+    // Then the question arises, how the fuck is it working with render when it is not referenced by a variable?
+    /*
+    switchNameHandler = (names) => {
+      //console.log("Name Handler Working");
+      // this.state.person[0].name = "Trial";
+      // DO NOT DO THIS. Use setState()
+      this.setState({
+        persons: [
+          { name: names[0], guilty: true },
+          { name: names[1], guilty: false },
+        ]
+      });
+  
+      // this will only change the person. It won't affect the part of the state that is not included in the changed object.
+    }
+    */
 
-    // this will only change the person. It won't affect the part of the state that is not included in the changed object.
+  deletePersonHandler = (index) => {
+    // slice without any arguments will simple copy that array and return a new one.
+    // the spread operator on persons will take the individual elements from that array
+    // and convert them into individual list, which are then kept in the array we declared.
+    // works same as slice operator.
+    const persons = [...this.state.persons];
+    persons.splice(index, 1);
+    const mutable = persons.length === 0 ? false : true;
+    this.setState({
+      persons: persons,
+      mutable : mutable
+    })
+
   }
 
   togglePersonsHandler = () => {
@@ -36,13 +61,20 @@ class App extends Component {
     })
   }
 
-  changeNameHandler = (event) => {
+  changeNameHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(person => {
+      return person.id === id;
+    });
+
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+    person.name = event.target.value;
+    const persons = [...this.state.persons];    
+    persons[personIndex] = person;
 
     this.setState({
-      persons: [
-        { name: "Gupta", guilty: true },
-        { name: event.target.value, guilty: false },
-      ]
+      persons : persons
     });
 
   }
@@ -57,23 +89,51 @@ class App extends Component {
     );
     */
 
+    let classes = [];
+
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
-      cursor: 'pointer'
+      cursor: 'pointer',
     };
 
-    return (
-      <div className="App">
-        <h1>Plutov1 - Next Generation Gatekeeper</h1>
-        <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
-        <p>The ultimate barriers shall be broken.</p>
-        <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
-        {
-          this.state.showPersons ?
-            <div>
+    let persons = null;
+    if (!this.state.mutable)
+    {
+      style.backgroundColor = 'black';  
+    }
+
+    if (this.state.persons.length <= 2)
+    {
+      classes.push('red');
+    }
+    if (this.state.persons.length <=1)
+    {
+      classes.push('bold');
+    }
+    if (this.state.persons.length === 0)
+    {
+      classes.splice(0, classes.length);
+    }
+
+    if (this.state.showPersons && this.state.mutable)
+    {
+      persons = (
+           <div>
+          {
+            this.state.persons.map((person, index) => {
+              return <Person
+                click={this.deletePersonHandler.bind(this, index)}
+                name={person.name}
+                age={person.age}
+                key={person.id}
+                change={(event) => this.changeNameHandler(event, person.id)}
+                />
+          })
+            /*
               <Person
                 name={this.state.persons[0].name}
                 guilty={this.state.persons[0].name} />
@@ -83,9 +143,21 @@ class App extends Component {
                 click={this.switchNameHandler}
                 change={this.changeNameHandler}
               >Sergeant at Arms.
-        </Person>
-            </div> : null
-        }
+              </Person>
+              */
+          }
+          </div> 
+      );
+      style.backgroundColor = 'red';
+    }
+
+    return (
+      <div className="App">
+        <h1>Plutov1 - Next Generation Gatekeeper</h1>
+        <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
+        <p className={classes.join(' ')}>The ultimate barriers shall be broken.</p>
+        <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        {persons}
       </div>
     );
   }
@@ -214,3 +286,15 @@ export default App;
 // this.switchNameHandler.bind(this, ["Gupta", "Oberoi"] binding data i.e passing data into the method switchNameHandler
 
 // JSX statements inside {} cannot contain block statements, only expressions.
+
+// React when updating, executes the render method and executes everything that falls inside the render method.
+// even the updated the css.
+
+// Flaw in deleting the person, inside the personhandler. In javascript objects and arrays are reference types.
+// Hence when the state of is procured, javascript will return a pointer to that original state. 
+// When the splice was made, it mutated the original state with it. We don't want that. 
+// Hence, the optimum approach should be to copy that state and then perform operations on it.
+
+// state should always be updated in an immutable fashion. Copy the state and then update the copy and apply.
+
+// The className can also be changed dynamically for a component.
