@@ -1,5 +1,6 @@
 // This person component is used to render information about Person.
 import React, { useState } from "react";
+import Radium from 'radium';
 import "./Person.css";
 
 /*
@@ -24,18 +25,23 @@ class Person extends Component
 */
 
 const person = (props) => {
+
+  /*
+  const style = {
+    '@media(minWidth : 500px)': {
+      width: '450px'
+    }
+  }
+  */
+
   return (
     <div className="Person">
-      <p onClick={props.click}>Name : {props.name}, Age: {getAge()}</p>
+      <p onClick={props.click}>Name : {props.name}, Age: {props.age}</p>
       <p>{props.children}</p>
       <input type="text" onChange={props.change} defaultValue={props.name} />
     </div>
   )
 };
-
-const getAge = () => {
-  return Math.floor(Math.random() * 45)
-}
 
 export default person;
 

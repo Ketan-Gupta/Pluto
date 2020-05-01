@@ -1,10 +1,8 @@
 import React, { useState, Component } from "react";
 import "./App.css";
-import Radium from 'radium';
+import Radium, { StyleRoot} from 'radium';
 import Person from './Person/Person'
  
-
-
 class App extends Component {
 
   constructor(props) {
@@ -13,8 +11,8 @@ class App extends Component {
 
   state = {
     persons: [
-      { id: 1, name: 'Ketan', guilty: true },
-      { id:2, name: 'Karan', guilty: false }
+      { id: 1, name: 'Ketan', age: 23},
+      { id: 2, name: 'Karan', age: 27}
     ],
     mutable: true,
     showPersons: false
@@ -158,7 +156,7 @@ class App extends Component {
         <p className={classes.join(' ')}>The ultimate barriers shall be broken.</p>
         <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
         {persons}
-      </div>
+        </div>
     );
   }
 }
@@ -298,3 +296,9 @@ export default App;
 // state should always be updated in an immutable fashion. Copy the state and then update the copy and apply.
 
 // The className can also be changed dynamically for a component.
+
+// Radium(App) is called higher order component, it is wrapping our app component inside itself.
+
+// Weird, the onHover property is forcing react to re-render the components.
+// and since we call a function to get the age every time person component is loaded.
+// on hover will trigger a new age every time the mouse pointer is loaded in front of it.
