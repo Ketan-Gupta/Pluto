@@ -1,7 +1,7 @@
 // This person component is used to render information about Person.
 import React, { useState } from "react";
 import Radium from 'radium';
-import "./Person.css";
+import classes from "./Person.css";
 
 /*
 class Person extends Component
@@ -34,8 +34,14 @@ const person = (props) => {
   }
   */
 
+  const randonNumber = Math.random();
+  if (randonNumber > 0.7) {
+    throw new Error('Oops! Something went wrong!');
+  }
+    
+
   return (
-    <div className="Person">
+    <div className={classes.Person}>
       <p onClick={props.click}>Name : {props.name}, Age: {props.age}</p>
       <p>{props.children}</p>
       <input type="text" onChange={props.change} defaultValue={props.name} />

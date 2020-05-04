@@ -1,7 +1,8 @@
 import React, { useState, Component } from "react";
-import "./App.css";
+import classes from './App.css';
 import Radium, { StyleRoot} from 'radium';
 import Person from './Person/Person'
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
  
 class App extends Component {
 
@@ -87,8 +88,9 @@ class App extends Component {
     );
     */
 
-    let classes = [];
+    let tempClasses = [];
 
+    /*
     const style = {
       backgroundColor: 'green',
       color: 'white',
@@ -97,24 +99,25 @@ class App extends Component {
       padding: '8px',
       cursor: 'pointer',
     };
+    */
 
     let persons = null;
-    if (!this.state.mutable)
-    {
-      style.backgroundColor = 'black';  
-    }
-
+    let buttonClass = '';
+    /*
+    if (!this.state.mutable) { classes.App.backgroundColor = 'black';  }
+    */
+    
     if (this.state.persons.length <= 2)
     {
-      classes.push('red');
+      tempClasses.push(classes.red);
     }
     if (this.state.persons.length <=1)
     {
-      classes.push('bold');
+      tempClasses.push(classes.bold);
     }
     if (this.state.persons.length === 0)
     {
-      classes.splice(0, classes.length);
+      tempClasses.splice(0, tempClasses.length);
     }
 
     if (this.state.showPersons && this.state.mutable)
@@ -123,13 +126,16 @@ class App extends Component {
            <div>
           {
             this.state.persons.map((person, index) => {
-              return <Person
+              return (
+              <ErrorBoundary key={person.id}>
+               <Person
                 click={this.deletePersonHandler.bind(this, index)}
                 name={person.name}
                 age={person.age}
-                key={person.id}
                 change={(event) => this.changeNameHandler(event, person.id)}
                 />
+              </ErrorBoundary>
+              )
           })
             /*
               <Person
@@ -146,15 +152,17 @@ class App extends Component {
           }
           </div> 
       );
-      style.backgroundColor = 'red';
+      // style.backgroundColor = 'red';
+      buttonClass = classes.Red;
+
     }
 
     return (
-      <div className="App">
+      <div className={classes.App}>
         <h1>Plutov1 - Next Generation Gatekeeper</h1>
         <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
-        <p className={classes.join(' ')}>The ultimate barriers shall be broken.</p>
-        <button style={style} onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        <p className={tempClasses.join(' ')}>The ultimate barriers shall be broken.</p>
+        <button className={buttonClass} onClick={this.togglePersonsHandler}>Toggle Persons</button>
         {persons}
         </div>
     );
@@ -302,3 +310,12 @@ export default App;
 // Weird, the onHover property is forcing react to re-render the components.
 // and since we call a function to get the age every time person component is loaded.
 // on hover will trigger a new age every time the mouse pointer is loaded in front of it.
+
+// Eject will give us power to have all the configurations such that we can edit them.
+// webpack is responsible for optimizing the code and bundle it together into what gets served on web.
+// webpack is also the one responsible for parsing the css import and allowing for its use inside the components.
+// css-loader is responsible for unpacking the css.  
+
+// ErrorBoundary is a higher order component that is wrapping up the person's component and catches its errors.
+// Now, the key of the person should be moved higher up to the parent component that is wrapping it up.
+// Map function is mapping the outer element, and the key always has to be in the outer component.
