@@ -1,9 +1,8 @@
 import React, { useState, Component } from "react";
 import classes from './App.css';
-import Radium, { StyleRoot} from 'radium';
-import Person from './Person/Person'
-import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
- 
+import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
+import Persons from '../components/Persons/Persons'
+
 class App extends Component {
 
   constructor(props) {
@@ -12,31 +11,31 @@ class App extends Component {
 
   state = {
     persons: [
-      { id: 1, name: 'Ketan', age: 23},
-      { id: 2, name: 'Karan', age: 27}
+      { id: 1, name: 'Ketan', age: 23 },
+      { id: 2, name: 'Karan', age: 27 }
     ],
     mutable: true,
     showPersons: false
   }
-    // Handler are not active functions, they are triggered by events.
-    // some black magic fuckery, if a function is not referenced by a variable like done below and this is called inside it
-    // it simple won't work because then this won't refer to the class at runtime.
-    // Then the question arises, how the fuck is it working with render when it is not referenced by a variable?
-    /*
-    switchNameHandler = (names) => {
-      //console.log("Name Handler Working");
-      // this.state.person[0].name = "Trial";
-      // DO NOT DO THIS. Use setState()
-      this.setState({
-        persons: [
-          { name: names[0], guilty: true },
-          { name: names[1], guilty: false },
-        ]
-      });
-  
-      // this will only change the person. It won't affect the part of the state that is not included in the changed object.
-    }
-    */
+  // Handler are not active functions, they are triggered by events.
+  // some black magic fuckery, if a function is not referenced by a variable like done below and this is called inside it
+  // it simple won't work because then this won't refer to the class at runtime.
+  // Then the question arises, how the fuck is it working with render when it is not referenced by a variable?
+  /*
+  switchNameHandler = (names) => {
+    //console.log("Name Handler Working");
+    // this.state.person[0].name = "Trial";
+    // DO NOT DO THIS. Use setState()
+    this.setState({
+      persons: [
+        { name: names[0], guilty: true },
+        { name: names[1], guilty: false },
+      ]
+    });
+ 
+    // this will only change the person. It won't affect the part of the state that is not included in the changed object.
+  }
+  */
 
   deletePersonHandler = (index) => {
     // slice without any arguments will simple copy that array and return a new one.
@@ -48,7 +47,7 @@ class App extends Component {
     const mutable = persons.length === 0 ? false : true;
     this.setState({
       persons: persons,
-      mutable : mutable
+      mutable: mutable
     })
 
   }
@@ -69,11 +68,11 @@ class App extends Component {
       ...this.state.persons[personIndex]
     };
     person.name = event.target.value;
-    const persons = [...this.state.persons];    
+    const persons = [...this.state.persons];
     persons[personIndex] = person;
 
     this.setState({
-      persons : persons
+      persons: persons
     });
 
   }
@@ -106,51 +105,26 @@ class App extends Component {
     /*
     if (!this.state.mutable) { classes.App.backgroundColor = 'black';  }
     */
-    
-    if (this.state.persons.length <= 2)
-    {
+
+    if (this.state.persons.length <= 2) {
       tempClasses.push(classes.red);
     }
-    if (this.state.persons.length <=1)
-    {
+    if (this.state.persons.length <= 1) {
       tempClasses.push(classes.bold);
     }
-    if (this.state.persons.length === 0)
-    {
+    if (this.state.persons.length === 0) {
       tempClasses.splice(0, tempClasses.length);
     }
 
-    if (this.state.showPersons && this.state.mutable)
-    {
+    if (this.state.showPersons && this.state.mutable) {
       persons = (
-           <div>
-          {
-            this.state.persons.map((person, index) => {
-              return (
-              <ErrorBoundary key={person.id}>
-               <Person
-                click={this.deletePersonHandler.bind(this, index)}
-                name={person.name}
-                age={person.age}
-                change={(event) => this.changeNameHandler(event, person.id)}
-                />
-              </ErrorBoundary>
-              )
-          })
-            /*
-              <Person
-                name={this.state.persons[0].name}
-                guilty={this.state.persons[0].name} />
-              <Person
-                name={this.state.persons[1].name}
-                guilty={this.state.persons[1].name}
-                click={this.switchNameHandler}
-                change={this.changeNameHandler}
-              >Sergeant at Arms.
-              </Person>
-              */
-          }
-          </div> 
+        <div>
+          <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.changeNameHandler}
+          />
+        </div>
       );
       // style.backgroundColor = 'red';
       buttonClass = classes.Red;
@@ -164,7 +138,7 @@ class App extends Component {
         <p className={tempClasses.join(' ')}>The ultimate barriers shall be broken.</p>
         <button className={buttonClass} onClick={this.togglePersonsHandler}>Toggle Persons</button>
         {persons}
-        </div>
+      </div>
     );
   }
 }
@@ -319,3 +293,5 @@ export default App;
 // ErrorBoundary is a higher order component that is wrapping up the person's component and catches its errors.
 // Now, the key of the person should be moved higher up to the parent component that is wrapping it up.
 // Map function is mapping the outer element, and the key always has to be in the outer component.
+
+// Components that manage state should not be rendering too much UI. i.e their render method should be lean without much jsx 

@@ -1,6 +1,5 @@
 // This person component is used to render information about Person.
 import React, { useState } from "react";
-import Radium from 'radium';
 import classes from "./Person.css";
 
 /*
@@ -33,12 +32,6 @@ const person = (props) => {
     }
   }
   */
-
-  const randonNumber = Math.random();
-  if (randonNumber > 0.7) {
-    throw new Error('Oops! Something went wrong!');
-  }
-    
 
   return (
     <div className={classes.Person}>
