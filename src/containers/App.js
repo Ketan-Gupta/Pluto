@@ -2,6 +2,7 @@ import React, { useState, Component } from "react";
 import classes from './App.css';
 import ErrorBoundary from '../components/ErrorBoundary/ErrorBoundary'
 import Persons from '../components/Persons/Persons'
+import Cockpit from "../components/Cockpit/Cockpit";
 
 class App extends Component {
 
@@ -86,9 +87,6 @@ class App extends Component {
       React.createElement("h1", null, "Hi! I am React Application")
     );
     */
-
-    let tempClasses = [];
-
     /*
     const style = {
       backgroundColor: 'green',
@@ -106,14 +104,9 @@ class App extends Component {
     if (!this.state.mutable) { classes.App.backgroundColor = 'black';  }
     */
 
-    if (this.state.persons.length <= 2) {
-      tempClasses.push(classes.red);
-    }
-    if (this.state.persons.length <= 1) {
-      tempClasses.push(classes.bold);
-    }
-    if (this.state.persons.length === 0) {
-      tempClasses.splice(0, tempClasses.length);
+    if(!this.state.mutable)
+    {
+      buttonClass = classes.Disabled;  
     }
 
     if (this.state.showPersons && this.state.mutable) {
@@ -127,16 +120,11 @@ class App extends Component {
         </div>
       );
       // style.backgroundColor = 'red';
-      buttonClass = classes.Red;
-
     }
 
     return (
       <div className={classes.App}>
-        <h1>Plutov1 - Next Generation Gatekeeper</h1>
-        <p>Pluto is conundrums solace in the labyrinth of this universe.</p>
-        <p className={tempClasses.join(' ')}>The ultimate barriers shall be broken.</p>
-        <button className={buttonClass} onClick={this.togglePersonsHandler}>Toggle Persons</button>
+        <Cockpit persons={this.state.persons} toggle={this.togglePersonsHandler} showPerson={this.state.showPersons} mutable={this.state.mutable}/>
         {persons}
       </div>
     );
